@@ -1,80 +1,79 @@
 import React from 'react';
 import { AlertTriangle, CheckCircle, AlertOctagon } from 'lucide-react';
-import { PipelineData, PressureHistory } from '../types';
+import { PipelineData } from '../types';
 import { PressureGraph } from './PressureGraph';
+import { usePressureHistory } from '../hooks/usePressureHistory';
+import { FlowRateCard } from './FlowRateCard';
+import { calculateFlowDifference } from '../utils/flowUtils';
 
 interface StatusCardProps {
-  pipeline: PipelineData;
-  pressureHistory: PressureHistory[];
+  data: PipelineData;
 }
 
-export const StatusCard: React.FC<StatusCardProps> = ({ pipeline, pressureHistory }) => {
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'normal':
-        return 'bg-green-100 text-green-800';
-      case 'warning':
-        return 'bg-yellow-100 text-yellow-800';
+export function StatusCard({ data }: StatusCardProps) {
+  const flowDiff = calculateFlowDifference(data.flowRate1, data.flowRate2);
+  const history = usePressureHistory(data.flowRate1, data.flowRate2);
+  
+  const getStatusColor = () => {
+    switch (data.status) {
       case 'critical':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-50 border-red-500 text-red-700';
+      case 'warning':
+        return 'bg-yellow-50 border-yellow-500 text-yellow-700';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-green-50 border-green-500 text-green-700';
     }
   };
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'normal':
-        return <CheckCircle className="w-5 h-5 text-green-600" />;
-      case 'warning':
-        return <AlertTriangle className="w-5 h-5 text-yellow-600" />;
+  const StatusIcon = () => {
+    switch (data.status) {
       case 'critical':
-        return <AlertOctagon className="w-5 h-5 text-red-600" />;
+        return <AlertOctagon className="w-6 h-6" />;
+      case 'warning':
+        return <AlertTriangle className="w-6 h-6" />;
       default:
-        return null;
+        return <CheckCircle className="w-6 h-6" />;
     }
   };
-
-  const pressureDiff = Math.abs(pipeline.pressure1 - pipeline.pressure2);
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-      <div className="flex justify-between items-start mb-4">
+    <div className={`rounded-xl border-2 p-6 ${getStatusColor()} transition-all duration-300 shadow-sm hover:shadow-md`}>
+      <div className="flex justify-between items-start mb-6">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">{pipeline.area}</h3>
-          <p className="text-sm text-gray-600">{pipeline.location}</p>
+          <h3 className="font-bold text-lg tracking-tight">{data.zone}</h3>
+          <p className="text-sm opacity-75 mt-0.5">{data.location}</p>
         </div>
-        <span className={`px-3 py-1 rounded-full text-sm font-medium flex items-center gap-2 ${getStatusColor(pipeline.status)}`}>
-          {getStatusIcon(pipeline.status)}
-          {pipeline.status.charAt(0).toUpperCase() + pipeline.status.slice(1)}
-        </span>
+        <div className="p-2 rounded-lg bg-white/50">
+          <StatusIcon />
+        </div>
       </div>
       
-      <div className="grid grid-cols-2 gap-4 mb-4">
-        <div className="bg-gray-50 p-3 rounded-md">
-          <p className="text-sm text-gray-600">Pressure 1</p>
-          <p className="text-lg font-semibold">{pipeline.pressure1} PSI</p>
-        </div>
-        <div className="bg-gray-50 p-3 rounded-md">
-          <p className="text-sm text-gray-600">Pressure 2</p>
-          <p className="text-lg font-semibold">{pipeline.pressure2} PSI</p>
-        </div>
+      <div className="grid grid-cols-2 gap-6 mb-6">
+        <FlowRateCard label="Flow Rate 1" value={data.flowRate1} />
+        <FlowRateCard label="Flow Rate 2" value={data.flowRate2} />
       </div>
 
-      <div className="border-t pt-4">
-        <div className="flex justify-between items-center">
-          <p className="text-sm text-gray-600">Pressure Difference</p>
-          <p className={`text-lg font-bold ${pressureDiff > 15 ? 'text-red-600' : 'text-gray-900'}`}>
-            {pressureDiff} PSI
-          </p>
+      <div className="bg-white/40 rounded-lg p-4 mb-6">
+        <div className="flex justify-between items-center mb-2">
+          <h4 className="font-medium text-sm">Flow Rate History</h4>
+          <div className="text-xs font-medium px-2 py-1 rounded-full bg-white/50">
+            Last {history.length} readings
+          </div>
+        </div>
+        <div className="h-[120px]">
+          <PressureGraph data={history} height={120} />
         </div>
       </div>
-
-      <PressureGraph data={pressureHistory} />
-
-      <p className="text-xs text-gray-500 mt-4">
-        Last updated: {new Date(pipeline.lastUpdated).toLocaleString()}
-      </p>
+      
+      <div className="border-t border-current/10 pt-4">
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-sm font-medium">Flow Rate Difference</span>
+          <span className="font-bold text-lg">{flowDiff.toFixed(1)} L/s</span>
+        </div>
+        <p className="text-xs opacity-75">
+          Last updated: {new Date(data.timestamp).toLocaleTimeString()}
+        </p>
+      </div>
     </div>
   );
-};
+}
