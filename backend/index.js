@@ -22,14 +22,12 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Initialize WebSocket Server
 const server = app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
 const wss = new WebSocket.Server({ server });
 
-// Store connected WebSocket clients
 const clients = new Set();
 
 wss.on("connection", (ws) => {
@@ -80,11 +78,111 @@ app.post("/api/pressure", async (req, res) => {
 
     try {
       for (const authority of AUTHORITIES) {
+        const htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .header {
+      text-align: center;
+      background-color: #ff4d4d;
+      color: white;
+      padding: 20px;
+      border-radius: 8px 8px 0 0;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+    .content {
+      padding: 20px;
+    }
+    .content p {
+      margin: 10px 0;
+      line-height: 1.6;
+    }
+    .content ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .content ul li {
+      margin: 10px 0;
+      padding: 10px;
+      background: #f9f9f9;
+      border-left: 4px solid #ff4d4d;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 12px;
+      color: #777;
+    }
+    .emergency {
+      font-weight: bold;
+      color: #ff4d4d;
+    }
+    .cta {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #ff4d4d;
+      color: white;
+      text-decoration: none;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+    .cta:hover {
+      background-color: #e33e3e;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <div class="header">
+      <h1>🚨 Emergency Alert: High Water Pressure Difference 🚨</h1>
+    </div>
+    <div class="content">
+      <p>Dear Authority,</p>
+      <p>We have detected a critical issue with the water pressure levels in the monitored area. Here are the details:</p>
+      <ul>
+        <li><strong>End 1 Pressure:</strong> <span class="emergency">${end1Pressure} units</span></li>
+        <li><strong>End 2 Pressure:</strong> <span class="emergency">${end2Pressure} units</span></li>
+        <li><strong>Pressure Difference:</strong> <span class="emergency">${pressureDifference} units</span></li>
+        <li><strong>Location:</strong> Industry</li>
+        <li><strong>Date & Time:</strong> ${new Date().toLocaleString()}</li>
+      </ul>
+      <p class="emergency">⚠️ The pressure difference exceeds the safe threshold of ${PRESSURE_THRESHOLD} units. Immediate action is required.</p>
+      <a href="#" class="cta">Take Immediate Action</a>
+      <p>Thank you for your prompt attention to this matter.</p>
+      <p>Best regards,<br><strong>Flow Guardian</strong></p>
+    </div>
+    <div class="footer">
+      <p>This is an automated message. Please do not reply to this email.</p>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
         await transporter.sendMail({
           from: process.env.EMAIL_USER,
           to: authority.email,
           subject: "Emergency: High Water Pressure Difference",
-          text: `The water pressure difference is dangerously high: ${pressureDifference} units.`,
+          html: htmlContent,
         });
         console.log(`Email sent to ${authority.email}`);
       }
