@@ -153,19 +153,19 @@ app.post("/api/pressure", async (req, res) => {
 <body>
   <div class="email-container">
     <div class="header">
-      <h1>🚨 Emergency Alert: High Water Pressure Difference 🚨</h1>
+      <h1>🚨 Emergency Alert: High Water flowrate Difference 🚨</h1>
     </div>
     <div class="content">
       <p>Dear Authority,</p>
-      <p>We have detected a critical issue with the water pressure levels in the monitored area. Here are the details:</p>
+      <p>We have detected a critical issue with the water flowrate levels in the monitored area. Here are the details:</p>
       <ul>
-        <li><strong>End 1 Pressure:</strong> <span class="emergency">${end1Pressure} units</span></li>
-        <li><strong>End 2 Pressure:</strong> <span class="emergency">${end2Pressure} units</span></li>
-        <li><strong>Pressure Difference:</strong> <span class="emergency">${pressureDifference} units</span></li>
+        <li><strong>End 1 FlowRate:</strong> <span class="emergency">${end1Pressure} units</span></li>
+        <li><strong>End 2 FlowRate:</strong> <span class="emergency">${end2Pressure} units</span></li>
+        <li><strong>Flowrate Difference:</strong> <span class="emergency">${pressureDifference} units</span></li>
         <li><strong>Location:</strong> Industry</li>
         <li><strong>Date & Time:</strong> ${new Date().toLocaleString()}</li>
       </ul>
-      <p class="emergency">⚠️ The pressure difference exceeds the safe threshold of ${PRESSURE_THRESHOLD} units. Immediate action is required.</p>
+      <p class="emergency">⚠️ The flowrate difference exceeds the safe threshold of ${PRESSURE_THRESHOLD} units. Immediate action is required.</p>
       <a href="#" class="cta">Take Immediate Action</a>
       <p>Thank you for your prompt attention to this matter.</p>
       <p>Best regards,<br><strong>Flow Guardian</strong></p>
@@ -181,7 +181,7 @@ app.post("/api/pressure", async (req, res) => {
         await transporter.sendMail({
           from: process.env.EMAIL_USER,
           to: authority.email,
-          subject: "Emergency: High Water Pressure Difference",
+          subject: "Emergency: High Water Flowrate Difference",
           html: htmlContent,
         });
         console.log(`Email sent to ${authority.email}`);
