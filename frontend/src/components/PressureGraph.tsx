@@ -8,11 +8,24 @@ interface PressureGraphProps {
 export function PressureGraph({ data, height = 120 }: PressureGraphProps) {
   if (data.length < 2) return null;
 
+  // Function to spread the values randomly within a range
+  const spreadData = (value: number) => {
+    const spreadFactor = 0.05; // Adjust this to control how much to spread
+    const spread = value * spreadFactor;
+    return value + (Math.random() * spread * 2 - spread); // Randomly vary the value within ±spread
+  };
+
+  // Spread the pressure values
+  const spreadDataPoints = data.map(d => ({
+    pressure1: spreadData(d.pressure1),
+    pressure2: spreadData(d.pressure2),
+  }));
+
   const maxPressure = Math.max(
-    ...data.flatMap(d => [d.pressure1, d.pressure2])
+    ...spreadDataPoints.flatMap(d => [d.pressure1, d.pressure2])
   );
   const minPressure = Math.min(
-    ...data.flatMap(d => [d.pressure1, d.pressure2])
+    ...spreadDataPoints.flatMap(d => [d.pressure1, d.pressure2])
   );
   const range = maxPressure - minPressure;
   const padding = range * 0.1; // Add 10% padding to the top and bottom
@@ -20,12 +33,12 @@ export function PressureGraph({ data, height = 120 }: PressureGraphProps) {
   const normalize = (value: number) => 
     ((value - (minPressure - padding)) / ((range + 2 * padding) || 1)) * (height - 20);
 
-  const points1 = data.map((d, i) => 
-    `${(i / (data.length - 1)) * 100},${height - 10 - normalize(d.pressure1)}`
+  const points1 = spreadDataPoints.map((d, i) => 
+    `${(i / (spreadDataPoints.length - 1)) * 100},${height - 10 - normalize(d.pressure1)}`
   ).join(' ');
   
-  const points2 = data.map((d, i) => 
-    `${(i / (data.length - 1)) * 100},${height - 10 - normalize(d.pressure2)}`
+  const points2 = spreadDataPoints.map((d, i) => 
+    `${(i / (spreadDataPoints.length - 1)) * 100},${height - 10 - normalize(d.pressure2)}`
   ).join(' ');
 
   return (

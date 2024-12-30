@@ -11,6 +11,12 @@ export interface PipelineData {
   temperature: number;
 }
 
+export interface PressureHistory {
+  pressure1: number,
+  pressure2: number,
+  timestamp:string
+}
+
 export interface FlowHistory {
   flowRate1: number;
   flowRate2: number;

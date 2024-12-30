@@ -1,4 +1,3 @@
-import React from 'react';
 import { AlertTriangle, CheckCircle, AlertOctagon } from 'lucide-react';
 import { PipelineData } from '../types';
 import { PressureGraph } from './PressureGraph';

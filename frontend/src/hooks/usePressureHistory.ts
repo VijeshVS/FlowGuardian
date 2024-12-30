@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { PressureHistory } from '../types';
 
-const MAX_HISTORY_POINTS = 20;
+const MAX_HISTORY_POINTS = 200;
 
 export function usePressureHistory(pressure1: number, pressure2: number) {
   const [history, setHistory] = useState<PressureHistory[]>([]);

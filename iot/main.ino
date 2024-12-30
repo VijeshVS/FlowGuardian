@@ -1,7 +1,6 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
 
-
 const char* ssid = "";
 const char* password = "";
 

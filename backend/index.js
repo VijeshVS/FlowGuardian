@@ -178,12 +178,12 @@ app.post("/api/pressure", async (req, res) => {
 </html>
 `;
 
-        await transporter.sendMail({
-          from: process.env.EMAIL_USER,
-          to: authority.email,
-          subject: "Emergency: High Water Flowrate Difference",
-          html: htmlContent,
-        });
+          // await transporter.sendMail({
+          //   from: process.env.EMAIL_USER,
+          //   to: authority.email,
+          //   subject: "Emergency: High Water Flowrate Difference",
+          //   html: htmlContent,
+          // });
         console.log(`Email sent to ${authority.email}`);
       }
       return res
