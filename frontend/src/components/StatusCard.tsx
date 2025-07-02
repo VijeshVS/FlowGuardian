@@ -42,7 +42,7 @@ export function StatusCard({ data }: StatusCardProps) {
           <h3 className="font-bold text-lg tracking-tight">{data.zone}</h3>
           <p className="text-sm opacity-75 mt-0.5">{data.location}</p>
         </div>
-        <div className="p-2 rounded-lg bg-white/50">
+        <div className="p-2 rounded-lg">
           <StatusIcon />
         </div>
       </div>
@@ -52,19 +52,19 @@ export function StatusCard({ data }: StatusCardProps) {
         <FlowRateCard label="Flow Rate 2" value={data.flowRate2} />
       </div>
 
-      <div className="bg-white/40 rounded-lg p-4 mb-6">
+      <div className="rounded-lg p-4 mb-10">
         <div className="flex justify-between items-center mb-2">
           <h4 className="font-medium text-sm">Flow Rate History</h4>
-          <div className="text-xs font-medium px-2 py-1 rounded-full bg-white/50">
+          <div className="text-xs font-medium px-2 py-1 rounded-full">
             Last {history.length} readings
           </div>
         </div>
-        <div className="h-[120px]">
-          <PressureGraph data={history} height={120} />
+        <div className="h-[180px]">
+          <PressureGraph data={history} height={180} />
         </div>
       </div>
       
-      <div className="border-t border-current/10 pt-4">
+      <div className="border-t border-current/10 pt-4 mt-20">
         <div className="flex justify-between items-center mb-2">
           <span className="text-sm font-medium">Flow Rate Difference</span>
           <span className="font-bold text-lg">{flowDiff.toFixed(1)} L/s</span>

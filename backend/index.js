@@ -9,8 +9,8 @@ const PORT = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
-const PRESSURE_THRESHOLD = 50;
-const AUTHORITIES = [{ email: "vijeshsshetty@gmail.com" }];
+const PRESSURE_THRESHOLD = 20;
+const AUTHORITIES = [{ email: "vijesh.is23@rvce.edu.in" }];
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -178,7 +178,7 @@ app.post("/api/pressure", async (req, res) => {
 </html>
 `;
 
-          await transporter.sendMail({
+      await transporter.sendMail({
             from: process.env.EMAIL_USER,
             to: authority.email,
             subject: "Emergency: High Water Flowrate Difference",
@@ -186,6 +186,7 @@ app.post("/api/pressure", async (req, res) => {
           });
         console.log(`Email sent to ${authority.email}`);
       }
+      console.log("sucesss brother")
       return res
         .status(200)
         .send({ message: "Email notifications sent successfully" });

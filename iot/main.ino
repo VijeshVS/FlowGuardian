@@ -1,11 +1,11 @@
-#define SENSOR1  27
-#define SENSOR2  26
+#define SENSOR1  18
+#define SENSOR2  19
 #include <WiFi.h>
 #include <HTTPClient.h>
 
-const char* ssid = "valo_speed";
-const char* password = "vijjuvijesh";
-const char* serverUrl = "http://192.168.212.49:3000/api/pressure";
+const char* ssid = "varenya";
+const char* password = "acdt1968";
+const char* serverUrl = "http://192.168.47.46:3000/api/pressure";
 
 long currentMillis = 0;
 long previousMillis = 0;
